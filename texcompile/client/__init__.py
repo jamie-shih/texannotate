@@ -175,4 +175,4 @@ def compile_html_return_text(
             contents = base64.b64decode(base64_contents).decode("utf-8")
             return contents
 
-    raise CompilationException('No pdf output.')
+    raise CompilationException("No html output.")
