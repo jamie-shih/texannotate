@@ -4,6 +4,8 @@ from lib.compile_autotex import (
     get_compiled_tex_files_from_autotex_output,
     get_errors,
     get_last_autotex_compiler,
+    _contains_cjk,
+    _guess_main_tex,
 )
 
 
@@ -86,3 +88,32 @@ def test_ignore_compilation_failure_for_other_compiler():
     )
     failed = did_compilation_fail(autotex_log, "other-compiler-not-pdflatex")
     assert not failed
+
+
+def test_contains_cjk(tmp_path):
+    tex = tmp_path / "main.tex"
+    tex.write_text("Hello 你好")
+    assert _contains_cjk(str(tmp_path))
+
+
+def test_contains_cjk_false(tmp_path):
+    tex = tmp_path / "main.tex"
+    tex.write_text("Hello world")
+    assert not _contains_cjk(str(tmp_path))
+
+
+def test_guess_main_tex(tmp_path):
+    (tmp_path / "main.tex").write_text("")
+    (tmp_path / "other.tex").write_text("")
+    assert _guess_main_tex(str(tmp_path)) == "main.tex"
+
+
+def test_guess_main_tex_single(tmp_path):
+    (tmp_path / "foo.tex").write_text("")
+    assert _guess_main_tex(str(tmp_path)) == "foo.tex"
+
+
+def test_guess_main_tex_none(tmp_path):
+    (tmp_path / "a.tex").write_text("")
+    (tmp_path / "b.tex").write_text("")
+    assert _guess_main_tex(str(tmp_path)) is None

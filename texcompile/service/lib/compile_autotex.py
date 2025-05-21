@@ -126,16 +126,46 @@ def run_compilation(
         check=False,
     )
 
+    # If AutoTeX fails and the sources contain CJK characters, attempt a
+    # fallback compilation with XeLaTeX. This improves support for Chinese and
+    # Japanese documents which often require Unicode-aware engines.
+    if result.returncode != 0 and _contains_cjk(sources_dir):
+        main_tex = _guess_main_tex(sources_dir)
+        if main_tex:
+            xelatex_res = subprocess.run(
+                ["xelatex", "-interaction=nonstopmode", main_tex],
+                cwd=sources_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+            # Combine logs from both runs for debugging.
+            result = subprocess.CompletedProcess(
+                args=xelatex_res.args,
+                returncode=xelatex_res.returncode,
+                stdout=result.stdout + b"\n" + xelatex_res.stdout,
+                stderr=result.stderr + b"\n" + xelatex_res.stderr,
+            )
+
     compiled_tex_files: List[CompiledTexFile] = []
     output_files: List[OutputFile] = []
-    success = False
+
     if result.returncode == 0:
         for pdf_filename in _get_generated_pdfs(result.stdout):
             output_files.append(OutputFile("pdf", pdf_filename))
         for postscript_filename in _get_generated_postscript_filenames(result.stdout):
             output_files.append(OutputFile("ps", postscript_filename))
         compiled_tex_files = get_compiled_tex_files_from_autotex_output(result.stdout)
-        success = True
+    elif _contains_cjk(sources_dir):
+        # Attempt to locate the main TeX file and check for a generated PDF
+        main_tex = _guess_main_tex(sources_dir)
+        if main_tex:
+            pdf_name = os.path.splitext(main_tex)[0] + ".pdf"
+            if os.path.exists(os.path.join(sources_dir, pdf_name)):
+                output_files.append(OutputFile("pdf", pdf_name))
+                compiled_tex_files = [CompiledTexFile(main_tex)]
+
+    success = result.returncode == 0
 
     logging.debug(
         "Finished compilation attempt for sources in %s. Success? %s.",
@@ -216,6 +246,33 @@ def get_last_autotex_compiler(autotex_log: str) -> Optional[str]:
     compiler_names = COMPILER_RUNNING_PATTERN.findall(autotex_log)
     if compiler_names and isinstance(compiler_names[-1], str):
         return compiler_names[-1]
+    return None
+
+
+def _contains_cjk(path: str) -> bool:
+    """Return True if any TeX source file contains Chinese or Japanese characters."""
+    cjk_pattern = re.compile("[\u4e00-\u9fff\u3040-\u30ff]")
+    for root, _, files in os.walk(path):
+        for name in files:
+            if name.endswith(".tex"):
+                try:
+                    with open(os.path.join(root, name), encoding="utf-8") as f:
+                        if cjk_pattern.search(f.read()):
+                            return True
+                except Exception:
+                    continue
+    return False
+
+
+def _guess_main_tex(path: str) -> Optional[str]:
+    """Heuristically guess the main TeX file in a directory."""
+    preferred = ["main.tex", "paper.tex", "thesis.tex"]
+    for candidate in preferred:
+        if os.path.exists(os.path.join(path, candidate)):
+            return candidate
+    tex_files = [f for f in os.listdir(path) if f.endswith(".tex")]
+    if len(tex_files) == 1:
+        return tex_files[0]
     return None
 
 
