@@ -136,7 +136,15 @@ This work was also presented in non-archived form at 3rd Workshop for Natural La
 - [x] Improve document structure extraction rule from [TeX-Workshop](https://github.com/James-Yu/LaTeX-Workshop/blob/6ee7aca5dfe057642fec1781b6810796d745862e/src/providers/structurelib/latex.ts#L114C25-L114C25)
 - [x] Parallelization
 - [x] Evaluate annotation
-- [ ] Documentation and Unit testing
+- [x] Documentation and Unit testing
+
+## Running Tests
+
+After installing the dependencies, run the test suite with:
+
+```bash
+pytest
+```
 
 ## License
 
