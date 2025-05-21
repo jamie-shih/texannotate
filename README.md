@@ -133,9 +133,9 @@ This work was also presented in non-archived form at 3rd Workshop for Natural La
       - [ ] Combine `pylatexenc` with `latex-utensils` and `unified-latex`.
       - [ ] Learn how [LaTeXML](https://github.com/brucemiller/LaTeXML) parses, expands `\def` and `\if`s.
    - [x] `\newcommand` parsing strategy from ~~[Tex-Workshop (using unified-latex)](https://github.com/James-Yu/LaTeX-Workshop/blob/856eaeebd66e16b9f8d500793f307aa02d4295eb/src/providers/completer/command.ts#L208) and [Overleaf (using Lezer)](https://github.com/overleaf/overleaf/blob/main/services/web/frontend/js/features/source-editor/lezer-latex/README.md)~~ `pylatexenc`.
-- [x] Imporve document structure extraction rule from [TeX-Workshop](https://github.com/James-Yu/LaTeX-Workshop/blob/6ee7aca5dfe057642fec1781b6810796d745862e/src/providers/structurelib/latex.ts#L114C25-L114C25) 
+- [x] Improve document structure extraction rule from [TeX-Workshop](https://github.com/James-Yu/LaTeX-Workshop/blob/6ee7aca5dfe057642fec1781b6810796d745862e/src/providers/structurelib/latex.ts#L114C25-L114C25)
 - [x] Parallelization
-- [x] Evlauate annotation
+- [x] Evaluate annotation
 - [ ] Documentation and Unit testing
 
 ## License
