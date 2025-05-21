@@ -12,6 +12,9 @@ retrieves their positions in the PDF, identifies corresponding semantic structur
 3. Guessing the labeling and reading order of unsuccessfully colored words based on line numbers.
 4. Aligned `PyMuPDF` and `pdfplumber` based on position. Now we recognize font flags such as *bold*, _italic_.
 
+[2024-07-01]:
+1. Added fallback XeLaTeX compilation with additional CJK fonts, enabling documents with English, Chinese and Japanese text to compile successfully.
+
 [2024-03-26]: 
 1. Added [de-macro](https://ctan.org/pkg/de-macro?lang=en) preprocessing, which cleans up LaTeX code by expanding a portion of a simple custom macros defined by `\newcommand`, and also inserts `\input` into the main file. This method should increase the success rate of parsing.
 2. Improved conservative parsing strategy for `LatexGroupNode`. We previously didn't color-code them because we were concerned that it was breaking the parameters of the unknown macro. Now we include `LatexGroupNode` with a length of more than 20 characters in the color annotation.

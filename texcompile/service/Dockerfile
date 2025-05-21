@@ -5,6 +5,13 @@ RUN apt-get update
 # Set DEBIAN_FRONTEND to disable tzdatainteractive dialogue
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq
+RUN apt-get install -y \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra \
+    fonts-ipafont-mincho fonts-ipafont-gothic \
+    fonts-arphic-uming fonts-arphic-ukai \
+    fonts-unfonts-core \
+    fonts-noto-color-emoji
 
 # Install Perl
 # Build-essential is required for installing Perl dependencies
