@@ -2,6 +2,7 @@ from lib.compile_autotex import (
     CompiledTexFile,
     did_compilation_fail,
     get_compiled_tex_files_from_autotex_output,
+    get_compilation_logs,
     get_errors,
     get_last_autotex_compiler,
     _contains_cjk,
@@ -117,3 +118,20 @@ def test_guess_main_tex_none(tmp_path):
     (tmp_path / "a.tex").write_text("")
     (tmp_path / "b.tex").write_text("")
     assert _guess_main_tex(str(tmp_path)) is None
+
+
+def test_get_compilation_logs_multiple_runs():
+    autotex_log = "\n".join(
+        [
+            "[verbose]:  ~~~~~~~~~~~ Running pdflatex for the first time ~~~~~~~",
+            "first run output line",
+            "intermediate info",
+            "[verbose]:  ~~~~~~~~~~~ Running pdflatex for the first time ~~~~~~~",
+            "second run output line",
+            "more details",
+        ]
+    )
+    logs = get_compilation_logs(autotex_log, "pdflatex")
+    assert len(logs) == 2
+    assert "first run output line" in logs[0]
+    assert "second run output line" in logs[1]
