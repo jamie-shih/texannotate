@@ -1,4 +1,10 @@
-from lib.compile_autotex import (
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / 'lib'))
+
+from texcompile.service.lib.compile_autotex import (
     CompiledTexFile,
     did_compilation_fail,
     get_compiled_tex_files_from_autotex_output,
