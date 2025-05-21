@@ -55,7 +55,7 @@ def convert_color(non_stroking_color):
     if len(non_stroking_color) < 3:
         return '#000000'
     elif max(non_stroking_color) > 1 or min(non_stroking_color) < 0:
-        return '#000000' # invalid color, may due to pdfblumber's bug
+        return '#000000' # invalid color, may due to pdfplumber's bug
     else:
         return to_hex(non_stroking_color)
 
